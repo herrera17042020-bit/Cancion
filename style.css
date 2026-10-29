@@ -1,0 +1,327 @@
+:root {
+  --rosa-noche: #3a0f2a;     /* fondo profundo */
+  --ciruela: #6b1d4f;
+  --rosa-fuerte: #ff4f9a;
+  --rosa: #ff9ec7;
+  --rosa-palido: #ffe3ef;
+  --texto-apagado: rgba(255, 227, 239, 0.38);
+  --fuente-titulo: "Fraunces", Georgia, "Times New Roman", serif;
+  --fuente-texto: "Nunito", "Segoe UI", system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body { height: 100%; }
+
+body {
+  font-family: var(--fuente-texto);
+  color: var(--rosa-palido);
+  background:
+    radial-gradient(ellipse at 20% 10%, #8a2463 0%, transparent 55%),
+    radial-gradient(ellipse at 85% 90%, #a8326f 0%, transparent 50%),
+    linear-gradient(160deg, var(--ciruela), var(--rosa-noche));
+  background-attachment: fixed;
+  overflow: hidden;
+  padding: env(safe-area-inset-top, 0px) 0 env(safe-area-inset-bottom, 0px);
+}
+
+#fondo {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Ositos voladores que se disparan corazones durante la canción */
+#ositos {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Aurora: manchas de luz rosada que se mueven despacio */
+.aurora {
+  --pulso: 1; /* lo mueve script.js al ritmo de la canción */
+  position: fixed;
+  inset: -20%;
+  z-index: 0;
+  pointer-events: none;
+  filter: blur(70px) saturate(1.2);
+  transform: scale(var(--pulso));
+  transition: transform 0.12s ease-out;
+}
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  mix-blend-mode: screen;
+  opacity: 0.75;
+}
+.b1 { width: 55vmax; height: 55vmax; left: 5%;  top: 0%;  background: radial-gradient(circle, #ff4f9a 0%, transparent 65%); animation: deriva1 22s ease-in-out infinite; }
+.b2 { width: 50vmax; height: 50vmax; right: 0%; top: 25%; background: radial-gradient(circle, #c13584 0%, transparent 65%); animation: deriva2 28s ease-in-out infinite; }
+.b3 { width: 45vmax; height: 45vmax; left: 25%; bottom: 0%; background: radial-gradient(circle, #ff9ec7 0%, transparent 60%); opacity: 0.5; animation: deriva3 25s ease-in-out infinite; }
+.b4 { width: 35vmax; height: 35vmax; left: 55%; top: 5%;  background: radial-gradient(circle, #b44cff 0%, transparent 65%); opacity: 0.35; animation: deriva1 32s ease-in-out infinite reverse; }
+
+@keyframes deriva1 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(12vw, 10vh) scale(1.15); } }
+@keyframes deriva2 { 0%,100% { transform: translate(0,0) scale(1.1); } 50% { transform: translate(-14vw, -8vh) scale(0.9); } }
+@keyframes deriva3 { 0%,100% { transform: translate(0,0); } 50% { transform: translate(8vw, -14vh) scale(1.2); } }
+
+/* Oscurece suavemente los bordes para que la letra resalte */
+.vineta {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse at center, transparent 45%, rgba(40, 6, 28, 0.65) 100%);
+}
+
+/* ---------- Pantallas ---------- */
+.pantalla {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.6rem;
+  padding: 2rem 1.25rem;
+  text-align: center;
+  opacity: 0;
+  visibility: hidden;
+  transform: scale(0.97);
+  transition: opacity 0.9s ease, transform 0.9s ease, visibility 0s linear 0.9s;
+}
+.pantalla.activa {
+  opacity: 1;
+  visibility: visible;
+  transform: scale(1);
+  transition: opacity 0.9s ease, transform 0.9s ease, visibility 0s;
+}
+
+/* ---------- Pregunta ---------- */
+.sobre {
+  position: relative;
+  width: 120px;
+  height: 80px;
+  background: var(--rosa-palido);
+  border-radius: 6px;
+  box-shadow: 0 18px 40px rgba(58, 15, 42, 0.5);
+  animation: flotar 3.5s ease-in-out infinite;
+}
+.sobre-solapa {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 50px;
+  background: var(--rosa);
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  border-radius: 6px 6px 0 0;
+}
+.sobre-sello {
+  position: absolute;
+  left: 50%;
+  top: 34px;
+  transform: translateX(-50%);
+  font-size: 1.6rem;
+}
+
+.pregunta {
+  font-family: var(--fuente-titulo);
+  font-weight: 400;
+  font-size: clamp(2.2rem, 7vw, 4.2rem);
+  line-height: 1.12;
+  max-width: 16ch;
+}
+.pregunta em {
+  font-style: italic;
+  color: var(--rosa);
+}
+
+.botones {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  min-height: 60px;
+}
+
+.btn {
+  font-family: var(--fuente-texto);
+  font-weight: 700;
+  font-size: 1.05rem;
+  border: none;
+  border-radius: 999px;
+  padding: 0.95rem 1.9rem;
+  cursor: pointer;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.btn:focus-visible, .btn-redondo:focus-visible {
+  outline: 3px solid var(--rosa-palido);
+  outline-offset: 3px;
+}
+.btn-si {
+  background: var(--rosa-fuerte);
+  color: #fff;
+  box-shadow: 0 10px 30px rgba(255, 79, 154, 0.45);
+}
+.btn-si:hover { transform: translateY(-2px) scale(1.04); }
+.btn-no {
+  background: transparent;
+  color: var(--rosa-palido);
+  border: 1.5px solid var(--texto-apagado);
+}
+.btn-no.escapando { position: fixed; transition: left 0.3s ease, top 0.3s ease; }
+
+.mensaje-no {
+  min-height: 1.5em;
+  font-style: italic;
+  color: var(--rosa);
+}
+
+/* ---------- Karaoke ---------- */
+.dedicatoria {
+  position: absolute;
+  top: calc(1.5rem + env(safe-area-inset-top, 0px));
+  font-family: var(--fuente-titulo);
+  font-style: italic;
+  font-size: 1.1rem;
+  color: var(--rosa);
+}
+
+.letra {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.1rem;
+  width: 100%;
+  max-width: 900px;
+}
+
+.linea {
+  font-family: var(--fuente-titulo);
+  line-height: 1.2;
+  max-width: 22ch;
+  transition: font-size 0.5s ease, opacity 0.5s ease, filter 0.5s ease;
+}
+.linea.anterior,
+.linea.siguiente {
+  font-size: clamp(1.1rem, 3.4vw, 1.6rem);
+  color: var(--texto-apagado);
+  filter: blur(0.6px);
+}
+.linea.actual {
+  --p: 0%;
+  font-size: clamp(2rem, 7vw, 3.8rem);
+  font-weight: 600;
+  /* El relleno rosado avanza de izquierda a derecha como en un karaoke */
+  background: linear-gradient(90deg,
+      var(--rosa-fuerte) 0%,
+      var(--rosa) var(--p),
+      var(--rosa-palido) var(--p),
+      var(--rosa-palido) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 0 40px rgba(255, 79, 154, 0.25);
+}
+.linea.instrumental {
+  font-style: italic;
+  font-weight: 400;
+}
+
+.controles {
+  position: absolute;
+  bottom: calc(1.75rem + env(safe-area-inset-bottom, 0px));
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  width: min(420px, 88vw);
+}
+.btn-redondo {
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  background: var(--rosa-palido);
+  color: var(--ciruela);
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+.barra {
+  flex: 1;
+  height: 6px;
+  border-radius: 99px;
+  background: rgba(255, 227, 239, 0.18);
+  cursor: pointer;
+  overflow: hidden;
+}
+.barra-relleno {
+  width: 0%;
+  height: 100%;
+  background: linear-gradient(90deg, var(--rosa), var(--rosa-fuerte));
+}
+.tiempo {
+  font-size: 0.85rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--rosa);
+  min-width: 2.6rem;
+}
+
+/* ---------- Final ---------- */
+.corazon-final {
+  font-size: 4rem;
+  animation: latir 1.2s ease-in-out infinite;
+}
+.final-titulo {
+  font-family: var(--fuente-titulo);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(2.2rem, 7vw, 4rem);
+  line-height: 1.1;
+  max-width: 14ch;
+}
+.final-texto {
+  font-size: 1.1rem;
+  max-width: 34ch;
+  color: var(--rosa);
+}
+
+/* ---------- Modo sincronizar ---------- */
+.sync-titulo { font-family: var(--fuente-titulo); font-size: 2rem; }
+.sync-ayuda { max-width: 52ch; line-height: 1.6; color: var(--rosa); }
+.sync-ayuda code { background: rgba(255,255,255,0.12); padding: 0.1em 0.4em; border-radius: 4px; }
+.sync-linea { font-family: var(--fuente-titulo); font-size: clamp(1.6rem, 5vw, 2.6rem); max-width: 24ch; }
+.sync-siguiente { color: var(--texto-apagado); }
+.sync-resultado {
+  width: min(640px, 92vw);
+  height: 220px;
+  padding: 1rem;
+  border-radius: 12px;
+  border: 1px solid var(--texto-apagado);
+  background: rgba(58, 15, 42, 0.7);
+  color: var(--rosa-palido);
+  font: 0.85rem/1.5 ui-monospace, Consolas, monospace;
+}
+
+/* ---------- Animaciones ---------- */
+@keyframes flotar {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50%      { transform: translateY(-10px) rotate(2deg); }
+}
+@keyframes latir {
+  0%, 100% { transform: scale(1); }
+  15%      { transform: scale(1.18); }
+  30%      { transform: scale(1); }
+  45%      { transform: scale(1.12); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sobre, .corazon-final, .blob { animation: none; }
+  .pantalla, .linea { transition: none; }
+}
